@@ -26,10 +26,7 @@ class TestBooksCollector:
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector() 
 
     
-# Фикстура
-@pytest.fixture
-def collector():
-    return BooksCollector()
+
 
 
 # add_new_book
