@@ -1,13 +1,14 @@
-import pytest
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from locators.locators import ConstructorLocators
+
+BASE_URL = "https://stellarburgers.education-services.ru"
+
 
 def test_constructor_tabs(driver):
-    driver.get("https://stellarburgers.nomoreparties.site")
-    
-    tabs = ["Булки", "Соусы", "Начинки"]
-    for tab in tabs:
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.XPATH, f"//span[contains(text(),'{tab}')]"))
-        ).click()
+    driver.get(BASE_URL)
+
+    driver.find_element(*ConstructorLocators.SAUCES_TAB).click()
+    driver.find_element(*ConstructorLocators.FILLINGS_TAB).click()
+    driver.find_element(*ConstructorLocators.BUNS_TAB).click()
+
+    assert driver.find_element(*ConstructorLocators.BUNS_TAB).is_displayed()
+

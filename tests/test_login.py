@@ -1,23 +1,32 @@
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def test_login_with_real_user(driver):
-    driver.get("https://stellarburgers.nomoreparties.site")
-    
-    # Входим в аккаунт
-    WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Войти в аккаунт')]"))
+from helpers.data import USER_EMAIL, USER_PASSWORD
+from locators.locators import MainPageLocators, LoginPageLocators
+
+def test_login_via_main_page(driver):
+    driver.get("https://stellarburgers.education-services.ru")
+
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(MainPageLocators.LOGIN_BUTTON)
     ).click()
-    
-    WebDriverWait(driver, 20).until(
-        EC.visibility_of_element_located((By.NAME, "email"))
-    ).send_keys("testuser@example.com")
-    
-    driver.find_element(By.NAME, "password").send_keys("testpassword")
-    driver.find_element(By.XPATH, "//button[contains(., 'Войти')]").click()
-    
-    # Проверяем, что личный кабинет открылся
-    WebDriverWait(driver, 20).until(
-        EC.visibility_of_element_located((By.XPATH, "//h2[contains(text(),'Личный Кабинет')]"))
+
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located(LoginPageLocators.EMAIL_INPUT)
+    ).send_keys(USER_EMAIL)
+
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located(LoginPageLocators.PASSWORD_INPUT)
+    ).send_keys(USER_PASSWORD)
+
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(LoginPageLocators.LOGIN_BUTTON)
+    ).click()
+
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(MainPageLocators.PERSONAL_ACCOUNT_BUTTON)
+    ).click()
+
+    WebDriverWait(driver, 10).until(
+        EC.url_contains("/account")
     )
