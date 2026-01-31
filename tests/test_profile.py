@@ -32,6 +32,13 @@ def test_logout_from_profile(driver):
         *LoginPageLocators.LOGIN_BUTTON
     ).click()
 
+    # Ждём, пока исчезнет модальный оверлей (он перекрывает клики)
+    WebDriverWait(driver, 10).until(
+        EC.invisibility_of_element_located(
+            ProfilePageLocators.MODAL_OVERLAY
+        )
+    )
+
     WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable(
             MainPageLocators.PERSONAL_ACCOUNT_BUTTON

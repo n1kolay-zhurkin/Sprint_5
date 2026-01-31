@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.pytest_cache/
+venv/
+.env/
+.env.bak/
+.venv/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+chromedriver
+geckodriver
