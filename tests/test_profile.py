@@ -9,48 +9,34 @@ from locators.locators import (
 )
 
 
-def test_logout_from_profile(driver):
-    driver.get("https://stellarburgers.education-services.ru")
+class TestProfile:
 
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            MainPageLocators.LOGIN_BUTTON
+    def test_logout_from_profile(self, driver):
+        driver.get("https://stellarburgers.education-services.ru")
+
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(MainPageLocators.LOGIN_BUTTON)
+        ).click()
+
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(LoginPageLocators.EMAIL_INPUT)
+        ).send_keys(USER_EMAIL)
+
+        driver.find_element(*LoginPageLocators.PASSWORD_INPUT).send_keys(USER_PASSWORD)
+        driver.find_element(*LoginPageLocators.LOGIN_BUTTON).click()
+
+        # Переход в личный кабинет
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(MainPageLocators.PERSONAL_ACCOUNT_BUTTON)
+        ).click()
+
+        # Ждём кнопку выхода в профиле
+        logout_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(ProfilePageLocators.LOGOUT_BUTTON)
         )
-    ).click()
+        logout_button.click()
 
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            LoginPageLocators.EMAIL_INPUT
+        assert WebDriverWait(driver, 10).until(
+            EC.url_contains("/login")
         )
-    ).send_keys(USER_EMAIL)
 
-    driver.find_element(
-        *LoginPageLocators.PASSWORD_INPUT
-    ).send_keys(USER_PASSWORD)
-
-    driver.find_element(
-        *LoginPageLocators.LOGIN_BUTTON
-    ).click()
-
-    # Ждём, пока исчезнет модальный оверлей (он перекрывает клики)
-    WebDriverWait(driver, 10).until(
-        EC.invisibility_of_element_located(
-            ProfilePageLocators.MODAL_OVERLAY
-        )
-    )
-
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            MainPageLocators.PERSONAL_ACCOUNT_BUTTON
-        )
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            ProfilePageLocators.LOGOUT_BUTTON
-        )
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.url_contains("/login")
-    )

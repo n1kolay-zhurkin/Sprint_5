@@ -6,67 +6,39 @@ from locators.locators import RegistrationPageLocators, MainPageLocators
 from generators import generate_email, generate_password
 
 
-def test_successful_registration(driver):
-    email = generate_email()
-    password = generate_password()
+class TestRegistration:
 
-    driver.get("https://stellarburgers.education-services.ru/register")
+    def test_successful_registration(self, driver):
+        email = generate_email()
+        password = generate_password()
 
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            RegistrationPageLocators.NAME_INPUT
+        driver.get("https://stellarburgers.education-services.ru/register")
+
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.NAME_INPUT)
+        ).send_keys(USER_NAME)
+
+        driver.find_element(*RegistrationPageLocators.EMAIL_INPUT).send_keys(email)
+        driver.find_element(*RegistrationPageLocators.PASSWORD_INPUT).send_keys(password)
+        driver.find_element(*RegistrationPageLocators.REGISTER_BUTTON).click()
+
+        assert WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(MainPageLocators.PERSONAL_ACCOUNT_BUTTON)
         )
-    ).send_keys(USER_NAME)
 
-    driver.find_element(
-        *RegistrationPageLocators.EMAIL_INPUT
-    ).send_keys(email)
+    def test_registration_with_short_password(self, driver):
+        email = generate_email()
 
-    driver.find_element(
-        *RegistrationPageLocators.PASSWORD_INPUT
-    ).send_keys(password)
+        driver.get("https://stellarburgers.education-services.ru/register")
 
-    driver.find_element(
-        *RegistrationPageLocators.REGISTER_BUTTON
-    ).click()
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.NAME_INPUT)
+        ).send_keys(USER_NAME)
 
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(
-            MainPageLocators.PERSONAL_ACCOUNT_BUTTON
+        driver.find_element(*RegistrationPageLocators.EMAIL_INPUT).send_keys(email)
+        driver.find_element(*RegistrationPageLocators.PASSWORD_INPUT).send_keys("12345")
+        driver.find_element(*RegistrationPageLocators.REGISTER_BUTTON).click()
+
+        assert WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(RegistrationPageLocators.PASSWORD_ERROR)
         )
-    )
-
-
-def test_registration_with_short_password(driver):
-    email = generate_email()
-    short_password = "12345"
-
-    driver.get("https://stellarburgers.education-services.ru/register")
-
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            RegistrationPageLocators.NAME_INPUT
-        )
-    ).send_keys(USER_NAME)
-
-    driver.find_element(
-        *RegistrationPageLocators.EMAIL_INPUT
-    ).send_keys(email)
-
-    driver.find_element(
-        *RegistrationPageLocators.PASSWORD_INPUT
-    ).send_keys(short_password)
-
-    driver.find_element(
-        *RegistrationPageLocators.REGISTER_BUTTON
-    ).click()
-
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located(
-            RegistrationPageLocators.PASSWORD_ERROR
-        )
-    )
-
-    assert driver.find_element(
-        *RegistrationPageLocators.PASSWORD_ERROR
-    ).is_displayed()
